@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "solarsheild-engine": {
+      "command": "node",
+      "args": ["dist/mcp-server.js"],
+      "env": {},
+      "description": "SolarShield deterministic engine exposed as typed MCP tools. Tools: get_current_conditions, get_forecast, estimate_arrival, classify_severity, lookup_impact, cite_advisory. The server wraps the client-side deterministic core so Granite retrieves grounded values instead of hallucinating them.",
+      "tools": [
+        {
+          "name": "get_current_conditions",
+          "description": "Returns the latest normalized space-weather snapshot (Kp, solar wind speed, active alerts) from the cached NOAA/DONKI feeds. Every value includes its source and UTC timestamp."
+        },
+        {
+          "name": "get_forecast",
+          "description": "Returns the latest CME and geomagnetic storm forecast from NASA DONKI, including estimated CME speed and expected impact time range."
+        },
+        {
+          "name": "estimate_arrival",
+          "description": "Given a CME distance (km) and measured speed (km/s), calculates the deterministic arrival time with a ±6h uncertainty window. Returns null if speed is zero or missing — never invents a value."
+        },
+        {
+          "name": "classify_severity",
+          "description": "Given a Kp index value, returns the NOAA G-scale classification (G1–G5) or null if the value is below threshold or missing. Thresholds are verbatim from NOAA."
+        },
+        {
+          "name": "lookup_impact",
+          "description": "Given a G/S/R scale level string (e.g. 'G3'), returns the verbatim NOAA effect descriptions and action guidance with citation URL."
+        },
+        {
+          "name": "cite_advisory",
+          "description": "Searches the parsed NOAA advisory corpus for passages relevant to a query. Returns matching chunks with section reference and citation URL."
+        }
+      ]
+    }
+  }
+}
