@@ -1,0 +1,32 @@
+[
+  {
+    "activityID": "2024-05-08T06:09:00-CME-001",
+    "catalog": "M2M_CATALOG",
+    "startTime": "2024-05-08T06:09Z",
+    "sourceLocation": "S17E79",
+    "activeRegionNum": 13664,
+    "link": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/view/CME/31134/-1",
+    "note": "Halo CME associated with M5.6 flare.",
+    "instruments": [
+      { "displayName": "SOHO: LASCO/C2" }
+    ],
+    "cmeAnalyses": [
+      {
+        "time21_5": "2024-05-08T10:45Z",
+        "latitude": -17,
+        "longitude": 79,
+        "halfAngle": 40,
+        "speed": 1437,
+        "type": "S",
+        "isMostAccurate": true,
+        "note": "",
+        "levelOfData": 0,
+        "link": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/view/CMEAnalysis/31135/-1",
+        "enlilList": null
+      }
+    ],
+    "linkedEvents": [
+      { "activityID": "2024-05-08T05:51:00-FLR-001" }
+    ]
+  }
+]
