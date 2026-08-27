@@ -1,0 +1,28 @@
+﻿# secrets & env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# node / next
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# expo / eas
+.expo/
+android/
+ios/
+
+# logs / os / editor
+*.log
+.DS_Store
+.idea/
+.vscode/
+coverage/
+
+# build guide (contains internal strategy -- must not be tracked)
+SolarShield-Build-Guide-for-Bob.md
