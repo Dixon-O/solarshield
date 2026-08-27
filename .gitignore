@@ -26,3 +26,6 @@ coverage/
 
 # build guide (contains internal strategy -- must not be tracked)
 SolarShield-Build-Guide-for-Bob.md
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
