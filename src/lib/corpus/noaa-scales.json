@@ -1,0 +1,149 @@
+[
+  {
+    "id": "g0",
+    "section": "Geomagnetic Storms (G-scale)",
+    "scale": "G0",
+    "text": "Below storm threshold. Kp index less than 5. No significant geomagnetic storm activity.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g1",
+    "section": "Geomagnetic Storms (G-scale) — G1 Minor",
+    "scale": "G1",
+    "text": "G1 (Minor) geomagnetic storm. Kp = 5. Power systems: weak power grid fluctuations can occur. Spacecraft operations: minor impact on satellite operations possible. Radio: aurora has been seen as low as Michigan and Maine.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g1-effects",
+    "section": "Geomagnetic Storms (G-scale) — G1 Minor — Effects",
+    "scale": "G1",
+    "text": "Affected systems: Power grid — weak fluctuations. Spacecraft — minor impact on satellite operations. HF Radio — migratory animals affected at this and higher levels. Aurora — visible at high latitudes (above 60° geomagnetic lat, i.e., northern Michigan and Maine).",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g2",
+    "section": "Geomagnetic Storms (G-scale) — G2 Moderate",
+    "scale": "G2",
+    "text": "G2 (Moderate) geomagnetic storm. Kp = 6. Power systems: high-latitude power systems may experience voltage alarms, long-duration storms may cause transformer damage. Spacecraft: corrective actions to orientation may be required. HF Radio: HF radio propagation can fade at higher latitudes, and aurora has been seen as low as New York and Idaho.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g2-effects",
+    "section": "Geomagnetic Storms (G-scale) — G2 Moderate — Effects",
+    "scale": "G2",
+    "text": "Affected systems: Power grid — high-latitude power systems may experience voltage alarms. HF Radio — HF propagation degraded at higher latitudes; some radio blackout. Spacecraft — corrective actions to orientation required; increased drag on low Earth-orbit satellites. Aurora — visible as low as 55° geomagnetic latitude (e.g. New York, Wisconsin, Washington state).",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g3",
+    "section": "Geomagnetic Storms (G-scale) — G3 Strong",
+    "scale": "G3",
+    "text": "G3 (Strong) geomagnetic storm. Kp = 7. Power systems: voltage corrections may be required, false alarms triggered on protection devices. Spacecraft: surface charging may occur on satellite components, drag may increase on low-Earth orbit satellites, and corrections may be needed for orientation problems. HF Radio: intermittent degradation of HF radio communication on sunlit side, loss of radio contact for brief periods is possible. Low-frequency navigation signals degraded briefly. Aurora: as low as Oregon and Illinois.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g3-effects",
+    "section": "Geomagnetic Storms (G-scale) — G3 Strong — Effects",
+    "scale": "G3",
+    "text": "Affected systems: Power grid — voltage corrections may be required; false alarms triggered on protection devices. HF Radio — intermittent degradation; loss of contact for brief periods on sunlit side. GPS — low-frequency navigation signals degraded briefly. Spacecraft — surface charging; increased drag on LEO satellites. Aurora — visible as low as ~50° geomagnetic latitude (Oregon, Illinois).",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g4",
+    "section": "Geomagnetic Storms (G-scale) — G4 Severe",
+    "scale": "G4",
+    "text": "G4 (Severe) geomagnetic storm. Kp = 8. Power systems: widespread voltage control problems and some protective systems will mistakenly trip out key assets from the grid. Spacecraft: may experience surface charging and tracking problems, corrections may be needed for orientation problems. HF Radio: radio propagation may be impossible in many areas for one to two days. Low-frequency navigation signals may be affected for hours, contributing to increased error in positioning. Aurora: as low as Alabama and northern California.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g4-effects",
+    "section": "Geomagnetic Storms (G-scale) — G4 Severe — Effects",
+    "scale": "G4",
+    "text": "Affected systems: Power grid — widespread voltage control problems; protective systems may mistakenly trip key assets. HF Radio — radio propagation may be impossible in many areas for 1–2 days. GPS — low-frequency nav signals degraded for hours; increased position error. Spacecraft — surface charging and tracking problems; orientation corrections needed. Aurora — visible as low as ~45° geomagnetic latitude (Alabama, northern California).",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g5",
+    "section": "Geomagnetic Storms (G-scale) — G5 Extreme",
+    "scale": "G5",
+    "text": "G5 (Extreme) geomagnetic storm. Kp = 9. Power systems: widespread voltage control problems and protective system problems can occur; some grid systems may experience complete collapse or blackouts. Transformers may experience damage. Spacecraft: may experience extensive surface charging, problems with orientation, uplink/downlink and tracking satellites. HF Radio: complete HF radio blackout on the entire sunlit side of the Earth lasting for a number of hours. Navigation by GPS may be severely degraded for days. Aurora: as low as Florida and southern Texas.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "g5-effects",
+    "section": "Geomagnetic Storms (G-scale) — G5 Extreme — Effects",
+    "scale": "G5",
+    "text": "Affected systems: Power grid — complete collapse or blackouts possible; transformer damage. HF Radio — complete blackout on entire sunlit side for hours. GPS — severely degraded for days. Spacecraft — extensive surface charging; uplink/downlink and tracking problems; possible safe-mode transitions. Aurora — visible at low latitudes (Florida, southern Texas).",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "r1",
+    "section": "Radio Blackouts (R-scale) — R1 Minor",
+    "scale": "R1",
+    "text": "R1 (Minor) radio blackout. X-ray peak flux: M1 (10⁻⁵ W/m²). HF Radio: weak or minor degradation of HF radio communication on sunlit side; occasional loss of radio contact.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "r2",
+    "section": "Radio Blackouts (R-scale) — R2 Moderate",
+    "scale": "R2",
+    "text": "R2 (Moderate) radio blackout. X-ray peak flux: M5 (5×10⁻⁵ W/m²). HF Radio: limited blackout of HF radio communication on sunlit side; loss of radio contact for tens of minutes.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "r3",
+    "section": "Radio Blackouts (R-scale) — R3 Strong",
+    "scale": "R3",
+    "text": "R3 (Strong) radio blackout. X-ray peak flux: X1 (10⁻⁴ W/m²). HF Radio: wide area blackout of HF radio communication; loss of radio contact for about an hour on sunlit side of Earth.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "r4",
+    "section": "Radio Blackouts (R-scale) — R4 Severe",
+    "scale": "R4",
+    "text": "R4 (Severe) radio blackout. X-ray peak flux: X10 (10⁻³ W/m²). HF Radio: HF radio blackout on most of the sunlit side of Earth for 1–2 hours; navigation signals degraded for tens of minutes.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "r5",
+    "section": "Radio Blackouts (R-scale) — R5 Extreme",
+    "scale": "R5",
+    "text": "R5 (Extreme) radio blackout. X-ray peak flux: X20 (2×10⁻³ W/m²). HF Radio: complete HF radio blackout on the entire sunlit side of the Earth for a number of hours; navigation signals degraded for hours.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "s1",
+    "section": "Solar Radiation Storms (S-scale) — S1 Minor",
+    "scale": "S1",
+    "text": "S1 (Minor) solar radiation storm. Proton flux ≥10 MeV: 10 pfu. Minor impacts on HF radio in the polar regions.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "s2",
+    "section": "Solar Radiation Storms (S-scale) — S2 Moderate",
+    "scale": "S2",
+    "text": "S2 (Moderate) solar radiation storm. Proton flux ≥10 MeV: 100 pfu. Infrequent single-event upsets to satellites; small blackouts of HF radio in polar regions; exposure of passengers and crew in commercial jets at high latitudes to low-level radiation.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "s3",
+    "section": "Solar Radiation Storms (S-scale) — S3 Strong",
+    "scale": "S3",
+    "text": "S3 (Strong) solar radiation storm. Proton flux ≥10 MeV: 1,000 pfu. Single-event upsets; noise in imaging systems; degraded satellite tracking; elevated radiation hazard to astronauts; HF radio blackout in polar regions.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "s4",
+    "section": "Solar Radiation Storms (S-scale) — S4 Severe",
+    "scale": "S4",
+    "text": "S4 (Severe) solar radiation storm. Proton flux ≥10 MeV: 10,000 pfu. Memory device errors; star-tracker problems that may lead to significant noise in imaging systems and high orientation errors; significant radiation hazard to astronauts on EVA; HF radio blackout.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  },
+  {
+    "id": "s5",
+    "section": "Solar Radiation Storms (S-scale) — S5 Extreme",
+    "scale": "S5",
+    "text": "S5 (Extreme) solar radiation storm. Proton flux ≥10 MeV: 100,000 pfu. Unavoidable high radiation hazard to astronauts on EVA; astronauts in ISS may need to move to better-shielded locations; satellite systems may be put into safe mode; complete HF radio blackout possible.",
+    "citationUrl": "https://www.swpc.noaa.gov/noaa-scales-explanation"
+  }
+]
