@@ -57,7 +57,22 @@ SolarShield is a space-weather early-warning copilot built for the IBM AI Builde
 - Guide §9.1, §10, Appendix A, B, C, D
 - Guide §0 — `.bob/` machine must be first before feature work
 
-**Status:** [ ] pending
+**Status:** [x] done
+
+**§9.8 self-review results (M0):**
+1. ✅ lint clean, typecheck clean, 2 tests pass, production build clean
+2. ✅ No secrets in any commit — `SolarShield-Build-Guide-for-Bob.md` gitignored; `.env` variants gitignored; grep found no secret patterns in diff
+3. ✅ No external input yet (M0 is scaffold only)
+4. ✅ No LLM narration in M0
+5. ✅ No offline path changes in M0
+6. ✅ No invented packages — all confirmed: next, react, typescript, eslint, vitest, @testing-library/* all genuine
+7. ✅ No async code, no useEffect, no catch blocks in M0
+8. ✅ No dead code, no logs, no TODOs — clean scaffold only
+9. ✅ No displayed values in M0 (placeholder UI only)
+10. ✅ 7 atomic commits, Appendix D convention; no push/merge to main
+11. ✅ Did not re-read edited files; no large payload dumps; targeted installs only
+
+**Context for M1:** TypeScript is pinned at 5.x (TS 7 breaks typescript-eslint). ESLint uses flat config with `@typescript-eslint`. `npm run lint` is `eslint src --ext .ts,.tsx`. The `next lint` command no longer exists in Next.js 16. Next.js version is 16.3.3. React 19. Vitest 4.
 
 ---
 
