@@ -143,7 +143,30 @@ SolarShield is a space-weather early-warning copilot built for the IBM AI Builde
 - Guide §9.4 — UTC everywhere; check division by zero; abstain, never guess
 - Guide §5 — Docling parses the NOAA corpus; corpus is what "Ask" cites
 
-**Status:** [ ] pending
+**Status:** [x] done
+
+**§9.8 self-review results (M1):**
+1. ✅ lint clean, typecheck clean, 26 tests pass (14 NOAA, 6 DONKI, 4 snapshot, 2 baseline), production build clean — `/api/snapshot` shows as ƒ (dynamic server route)
+2. ✅ No secrets in diff — `NASA_API_KEY` read from `process.env` server-side only; DEMO_KEY only as code-path fallback (never committed as a real value); grep found nothing
+3. ✅ Every external input validated — all API fields guarded with type checks; missing fields → null; FetchError thrown on HTTP error or network failure
+4. ✅ No LLM narration in M1
+5. ✅ No offline path changes in M1 (offline layer is M4)
+6. ✅ No invented packages — only `next/server` (NextResponse) used; all types are stdlib
+7. ✅ No silent catch, no floating promises — all error paths throw typed FetchError; snapshot.ts uses Promise.allSettled
+8. ✅ No dead code, no console.log, no TODOs
+9. ✅ Every value in types.ts carries `source` and `fetchedAtUtc` fields
+10. ✅ 2 atomic commits; no push to main
+11. ✅ No large payloads in context — only 2-record samples inspected; full files saved to disk
+
+**Real API shapes confirmed (M1):**
+- Kp: `[{time_tag: string, Kp: number, a_running: number, station_count: number}]` (array oldest→newest)
+- RTSW: `[{time_tag, active, source, proton_speed, proton_density, proton_temperature, ...nullables, overall_quality}]` (newest first)
+- Alerts: `[{product_id, issue_datetime, message}]`
+- DONKI CME: `[{activityID, startTime, sourceLocation, activeRegionNum, cmeAnalyses: [{time21_5, speed, halfAngle, isMostAccurate}], linkedEvents: [{activityID}], link}]`
+- NOAA solar-wind mag endpoint (`mag-1-day.json`) is 404 — use `rtsw_wind_1m.json` instead
+- DONKI API was returning 503/timeout errors during development (DEMO_KEY rate limiting) — treated as degraded source, not crash
+
+**Context for M2:** Types are in `src/lib/data/types.ts`. `SpaceWeatherSnapshot` is the assembled type. `CmeRecord.primaryAnalysis.speedKmS` is the speed value for arrival-time calculation. `KpRecord.kp` is the input for severity classification.
 
 ---
 
