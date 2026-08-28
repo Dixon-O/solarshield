@@ -1,16 +1,22 @@
-// SolarShield Service Worker — M4 Offline Survivability
-// Caches the app shell on install; serves from cache when offline.
-// Network-first for API routes; cache-first for static assets.
+// SolarShield Service Worker — M4/M7: offline survivability + installability.
+// Precaches the app shell on install and serves it through a network blackout.
+//   API routes  → network-only (the app falls back to its IndexedDB snapshot)
+//   Navigations → cache-first, with the cached app shell as the offline fallback
+//   Assets      → cache-first, filling the cache as they load
 
-const CACHE_NAME = "solarsheild-v1";
+const CACHE_NAME = "solarshield-v2";
 
-// App shell files to pre-cache on install
+// App shell to pre-cache on install. Pre-caching is resilient (allSettled), so
+// a single missing entry never aborts the whole install.
 const APP_SHELL = [
   "/",
+  "/judges",
   "/manifest.json",
+  "/icon-192.png",
+  "/icon-512.png",
 ];
 
-// API routes that should never be served from cache (always fresh when online)
+// API routes that must always be fresh when online (never served from cache).
 const API_ROUTES = ["/api/snapshot", "/api/ask"];
 
 // ---------------------------------------------------------------------------
@@ -19,55 +25,72 @@ const API_ROUTES = ["/api/snapshot", "/api/ask"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)),
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.allSettled(APP_SHELL.map((url) => cache.add(url))),
+    ),
   );
   self.skipWaiting();
 });
 
 // ---------------------------------------------------------------------------
-// Activate — clean up old caches
+// Activate — drop old caches, take control of open clients
 // ---------------------------------------------------------------------------
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))),
-    ),
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)),
+        ),
+      )
+      .then(() => self.clients.claim()),
   );
-  event.waitUntil(clients.claim());
 });
 
 // ---------------------------------------------------------------------------
 // Fetch — strategy:
-//   API routes: network-first, no cache fallback (app handles degraded state)
-//   Static assets: cache-first, fall back to network
+//   API routes: network-only. Offline failure is intentional — the app reads
+//     its last-known snapshot from IndexedDB and keeps counting down.
+//   Navigations: cache-first, falling back to the cached app shell when the
+//     network is gone, so the app still boots during a blackout.
+//   Other GETs: cache-first, filling the cache as assets load.
 // ---------------------------------------------------------------------------
 
 self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
+  const { request } = event;
+  const url = new URL(request.url);
 
-  // API routes: network-only (the app's own snapshot/narration APIs)
+  // Only handle same-origin GETs; everything else goes straight to the network.
+  if (request.method !== "GET" || url.origin !== self.location.origin) return;
+
   if (API_ROUTES.some((route) => url.pathname.startsWith(route))) {
-    event.respondWith(fetch(event.request));
+    event.respondWith(fetch(request));
     return;
   }
 
-  // Static assets: cache-first
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.match(request).then((cached) => {
       if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        // Cache successful GET responses for static assets
-        if (
-          event.request.method === "GET" &&
-          response.status === 200 &&
-          (url.origin === self.location.origin || response.type === "basic")
-        ) {
-          const toCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, toCache));
-        }
-        return response;
-      });
+      return fetch(request)
+        .then((response) => {
+          // Cache successful same-origin GETs on the way through.
+          if (response.status === 200 && response.type === "basic") {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(async () => {
+          // Offline: for a page navigation, serve the cached app shell so the
+          // SPA can still boot and hydrate from its last-known snapshot.
+          if (request.mode === "navigate") {
+            const shell = await caches.match("/");
+            if (shell) return shell;
+          }
+          throw new Error("offline and resource not cached");
+        });
     }),
   );
 });
