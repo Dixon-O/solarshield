@@ -65,7 +65,7 @@ The bottom rung — the grounded deterministic engine over cached NOAA data — 
 
 | Component | Model / tech | Role | Status |
 |---|---|---|---|
-| IBM Granite (watsonx.ai) | `ibm/granite-3-3-8b-instruct` | Cloud narration — turns the deterministic values into plain language under strict "do not compute any new value" rules | Real watsonx call; needs server-side keys, falls back to template without them |
+| IBM Granite (watsonx.ai) | `ibm/granite-3-3-8b-instruct` | Cloud narration — turns the deterministic values into plain language under strict "do not compute any new value" rules | Real watsonx call; needs server-side keys — falls back to the grounded engine without them |
 | IBM Granite Guardian (watsonx.ai) | `ibm/granite-guardian-3-8b` | Grounding gate — verdicts each narration safe/grounded before it reaches the UI; fail-safe (any error blocks the output) | Real watsonx call; needs server-side keys |
 | Typed MCP tools | 6 in-process tools (`src/lib/mcp/tools.ts`) | Hand the model grounded values instead of letting it do math: `get_current_conditions`, `get_forecast`, `estimate_arrival`, `classify_severity`, `lookup_impact`, `cite_advisory` | Real |
 | Deterministic core + NOAA corpus | TypeScript; hand-curated NOAA corpus | The guaranteed answer path: physics-based arrival window, NOAA G-scale classification, verbatim impact text with citations | Real; covered by the 93-test suite |
