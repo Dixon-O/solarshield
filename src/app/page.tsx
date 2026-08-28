@@ -35,6 +35,7 @@ import { Ask } from "@/components/Ask";
 import { HistoricalReplay } from "@/components/HistoricalReplay";
 import { ScaleReference } from "@/components/ScaleReference";
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { InstallHint } from "@/components/InstallHint";
 import styles from "./page.module.css";
 
 type Tab = "live" | "ask" | "replay" | "scales";
@@ -138,6 +139,7 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <OfflineBanner />
+      <InstallHint />
 
       <header className={styles.header}>
         <div className={styles.brand}>
