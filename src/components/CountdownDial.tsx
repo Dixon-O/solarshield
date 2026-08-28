@@ -62,10 +62,13 @@ function describeArc(cx: number, cy: number, r: number, progress: number): strin
 }
 
 export function CountdownDial({ arrival, scale }: CountdownDialProps) {
-  const [nowMs, setNowMs] = useState(() => Date.now());
+  // Start null so the server-rendered HTML and the first client render are
+  // identical (no hydration mismatch). The real clock is read only after mount.
+  const [nowMs, setNowMs] = useState<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    setNowMs(Date.now());
     intervalRef.current = setInterval(() => setNowMs(Date.now()), 1000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -83,6 +86,23 @@ export function CountdownDial({ arrival, scale }: CountdownDialProps) {
           </svg>
           <div className={styles.countdownText}>
             <span className={styles.noEvent}>No active inbound events</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Pre-hydration frame (before the effect sets the clock): render a stable
+  // placeholder so the ticking value can't differ between server and client.
+  if (nowMs === null) {
+    return (
+      <div className={`${styles.dial} ${stateClass}`}>
+        <div className={styles.dialInner}>
+          <svg className={styles.svg} viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="50" className={styles.track} />
+          </svg>
+          <div className={styles.countdownText}>
+            <span className={styles.noEvent}>Synchronizing…</span>
           </div>
         </div>
       </div>
