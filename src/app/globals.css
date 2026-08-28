@@ -16,10 +16,10 @@
   --color-moderate: #f59e0b;
   --color-elevated: #f97316;
 
-  /* Typography */
-  --font-display:   'Inter', system-ui, sans-serif;
-  --font-data:      'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-  --font-body:      system-ui, -apple-system, sans-serif;
+  /* Typography — the -inter / -jetbrains vars are injected by next/font (see layout.tsx). */
+  --font-display:   var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-data:      var(--font-jetbrains), 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-body:      var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* Spacing */
   --space-1: 0.25rem;
