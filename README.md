@@ -2,7 +2,7 @@
 
 **A space-weather early-warning copilot that survives the blackout it warns about.**
 
-> Hosted demo: _<!-- TODO: paste deployed URL -->_ · Android APK: _<!-- TODO: paste build link -->_ · Judges, start here: [JUDGE.md](./JUDGE.md)
+> Hosted demo: _<!-- TODO: paste deployed URL -->_ · Put it on your phone: [INSTALL.md](./INSTALL.md) · Judges, start here: [JUDGE.md](./JUDGE.md)
 
 ---
 
@@ -43,7 +43,7 @@ To light up the optional live + AI paths, copy `.env.example` → `.env.local` a
 ```bash
 npm run typecheck   # 0 errors
 npm run lint        # 0 warnings
-npm test            # 93 tests across 14 files
+npm test            # 98 tests across 15 files
 npm run build       # production web build
 ```
 
@@ -68,7 +68,7 @@ The bottom rung — the grounded deterministic engine over cached NOAA data — 
 | IBM Granite (watsonx.ai) | `ibm/granite-3-3-8b-instruct` | Cloud narration — turns the deterministic values into plain language under strict "do not compute any new value" rules | Real watsonx call; needs server-side keys — falls back to the grounded engine without them |
 | IBM Granite Guardian (watsonx.ai) | `ibm/granite-guardian-3-8b` | Grounding gate — verdicts each narration safe/grounded before it reaches the UI; fail-safe (any error blocks the output) | Real watsonx call; needs server-side keys |
 | Typed MCP tools | 6 in-process tools (`src/lib/mcp/tools.ts`) | Hand the model grounded values instead of letting it do math: `get_current_conditions`, `get_forecast`, `estimate_arrival`, `classify_severity`, `lookup_impact`, `cite_advisory` | Real |
-| Deterministic core + NOAA corpus | TypeScript; hand-curated NOAA corpus | The guaranteed answer path: physics-based arrival window, NOAA G-scale classification, verbatim impact text with citations | Real; covered by the 93-test suite |
+| Deterministic core + NOAA corpus | TypeScript; hand-curated NOAA corpus | The guaranteed answer path: physics-based arrival window, NOAA G-scale classification, verbatim impact text with citations | Real; covered by the 98-test suite |
 
 **Data sources:** NOAA SWPC (planetary Kp, solar wind — no key) and NASA DONKI (coronal mass ejections — `NASA_API_KEY`). Guidance text is verbatim from the NOAA Space Weather Scales.
 
@@ -81,16 +81,25 @@ Three tabs plus a built-in demo:
 - **Replay** — play back a historical storm to see the system escalate.
 - **`/judges`** — a scripted six-act pain→relief demonstration over recorded 10–11 May 2024 Gannon G5 data. See [JUDGE.md](./JUDGE.md).
 
-## Native apps (iOS + Android)
+## On your phone
 
-SolarShield ships to both stores via **Capacitor**, which wraps the Next.js static export into native binaries. The native shell calls the **hosted** backend so the watsonx keys stay server-side, and the offline-resilience layer works identically inside the app. Full handover in [BUILD-NATIVE.md](./BUILD-NATIVE.md).
+SolarShield installs on a phone **straight from the browser** — no App Store, no
+account. It opens full-screen and keeps working offline, so the resilience story
+holds in your pocket. iPhone (Safari) and Android (Chrome) are both a few taps;
+the steps are in **[INSTALL.md](./INSTALL.md)**. This is the shipping path for
+iPhone today.
 
-The binaries are **not built or published yet** — that step runs on the developer's machine (Android Studio on Windows; a Mac or cloud-Mac for iOS) with store signing.
+For a store-listed **native Android** app, Capacitor wraps this same web app into
+a native binary — built on Windows, no rewrite. The native shell calls the
+**hosted** backend so the watsonx keys stay server-side, and the offline layer
+works identically inside it. A native **iOS** binary is an optional later step (it
+needs a Mac and a paid Apple developer account); until then iPhone uses the PWA
+above. Full handover in [BUILD-NATIVE.md](./BUILD-NATIVE.md).
 
 ## Honest limitations
 
 - The watsonx **model IDs above are documented, not yet live-verified** with a real keyed call. Until that call is made, the cloud-Granite path is unverified — the app still works fully without it via the grounded engine.
-- **Native binaries are not built or deployed yet** (hosted-demo and APK links above are placeholders to fill in).
+- **Phones install the PWA today** (see [INSTALL.md](./INSTALL.md)). **Store-listed native binaries aren't built or published yet** — the hosted-demo link above is still a placeholder, and native Android packaging (Windows) plus the optional iOS build run on the developer's machine per [BUILD-NATIVE.md](./BUILD-NATIVE.md).
 
 ## License
 
