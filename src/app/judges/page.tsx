@@ -114,6 +114,15 @@ const ACTS: Act[] = [
 
 const LAST = ACTS.length - 1;
 
+/**
+ * Deterministic anchor used for the very first (server + pre-hydration) render.
+ * Reading the wall clock during render makes the server HTML and the first
+ * client render disagree (React hydration error #418). We render from this
+ * fixed instant first, then re-anchor to the present in an effect after mount
+ * so the countdown still ticks in real time.
+ */
+const FALLBACK_ANCHOR_MS = Date.parse("2024-05-10T12:00:00.000Z");
+
 /** Deep clone via JSON — the corpus is plain data, safe on every runtime. */
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
@@ -125,14 +134,14 @@ interface Stage {
   arrival: ArrivalEstimate | null;
 }
 
-function buildStage(act: Act): Stage {
-  const nowIso = new Date().toISOString();
+function buildStage(act: Act, anchorMs: number): Stage {
+  const nowIso = new Date(anchorMs).toISOString();
 
   let arrival: ArrivalEstimate | null = null;
   let cmeStartIso = PEAK.recentCmes[0]?.startTimeUtc ?? nowIso;
 
   if (act.arrivalHours !== null) {
-    const arrivalMs = Date.now() + act.arrivalHours * 3600_000;
+    const arrivalMs = anchorMs + act.arrivalHours * 3600_000;
     // Back-compute the departure so the real physics reproduces this arrival.
     cmeStartIso = new Date(arrivalMs - TRAVEL_HOURS * 3600_000).toISOString();
     arrival = estimateArrival(EARTH_SUN_DISTANCE_KM, CME_SPEED_KM_S, cmeStartIso);
@@ -169,10 +178,23 @@ export default function JudgesDemo() {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
+  // null until mounted: the first render (server + hydration) uses the fixed
+  // fallback anchor so the HTML matches; the effect then re-anchors to the
+  // present, and re-anchors again each time an act opens, so the countdown
+  // ticks in real time.
+  const [anchorMs, setAnchorMs] = useState<number | null>(null);
 
   const act = ACTS[index];
   // Re-anchors the countdown to the present each time an act opens.
-  const stage = useMemo(() => buildStage(act), [act]);
+  const stage = useMemo(
+    () => buildStage(act, anchorMs ?? FALLBACK_ANCHOR_MS),
+    [act, anchorMs],
+  );
+
+  // Re-anchor to the present after mount and whenever the act changes.
+  useEffect(() => {
+    setAnchorMs(Date.now());
+  }, [index]);
 
   const goNext = useCallback(() => setIndex((i) => Math.min(LAST, i + 1)), []);
   const goPrev = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
