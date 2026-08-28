@@ -46,7 +46,7 @@ Controls: **Back / Next / Auto-play / Restart**, or the **←/→** arrow keys. 
 
 The app is built to degrade gracefully, so nothing here depends on secrets:
 
-- **No watsonx keys?** Narration falls back to the deterministic template — answers still appear, still sourced.
+- **No watsonx keys?** Narration comes from the grounded engine instead — answers still appear, still sourced.
 - **No NASA key?** Live CME data is limited, but the cached corpus and engine still run.
 - **No network at all?** That's Path A act 5–6 and Path B's offline step — the intended finale, not a failure.
 
