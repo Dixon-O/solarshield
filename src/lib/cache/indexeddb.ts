@@ -12,7 +12,7 @@
 import type { SpaceWeatherSnapshot } from "@/lib/data/types";
 import type { CorpusChunk } from "@/lib/core/types";
 
-const DB_NAME = "solarsheild-cache";
+const DB_NAME = "solarshield-cache";
 const DB_VERSION = 1;
 const STORE_SNAPSHOT = "snapshot";
 const STORE_CORPUS = "corpus";
