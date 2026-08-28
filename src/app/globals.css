@@ -1,34 +1,66 @@
-/* SolarShield Design Tokens — cockpit instrument palette */
+/* ==========================================================================
+   SolarShield — Mission-Control LIGHT design system
+   --------------------------------------------------------------------------
+   A bright, high-legibility instrument palette for a well-lit operations room.
+   Depth comes from soft shadows + hairline borders (not dark glows). Every
+   severity colour is chosen to clear WCAG-AA (~4.5:1) as text on white, so the
+   same token works as text, border, and SVG stroke. Fills are made by mixing
+   the token toward white with color-mix(), keeping hue but lightening.
+   ========================================================================== */
 
 :root {
-  --color-void:     #0a0e1a;
-  --color-surface:  #111827;
-  --color-border:   #1e2d40;
-  --color-muted:    #64748b;
-  --color-text:     #e2e8f0;
-  --color-data:     #94a3b8;
+  /* ---- Neutrals (the 60% + 30%) --------------------------------------- */
+  --color-void:          #e9eef6;  /* app canvas — soft cool light          */
+  --color-surface:       #ffffff;  /* instrument panels                     */
+  --color-surface-2:     #f2f6fc;  /* insets, hovers, table stripes         */
+  --color-border:        #dbe3ef;  /* hairline panel borders                */
+  --color-border-strong: #c4d0e2;  /* emphasised dividers                   */
+  --color-text:          #0d1a2b;  /* primary ink (near-black navy)         */
+  --color-muted:         #5b6a82;  /* secondary text / captions             */
+  --color-data:          #223349;  /* monospaced numeric readouts           */
 
-  /* Alarm accent — ONLY for active threat states (G3+). Never use decoratively. */
-  --color-alarm:    #ef4444;
+  /* ---- Brand + solar accent (the 10%) --------------------------------- */
+  --color-brand:         #1c64d8;  /* mission-control blue — links, active   */
+  --color-brand-ink:     #0f4aa8;  /* darker brand for text on tint          */
+  --color-brand-tint:    #e8f0fd;  /* brand wash for active surfaces         */
+  --color-solar-a:       #ffca62;  /* the mark's solar disc (decorative)     */
+  --color-solar-b:       #f5951b;
 
-  /* Severity state colors */
-  --color-calm:     #22c55e;
-  --color-moderate: #f59e0b;
-  --color-elevated: #f97316;
+  /* ---- Severity states (AA as text on white; fills via color-mix) ----- */
+  --color-calm:     #0a7d4d;  /* G0–G1  calm     */
+  --color-moderate: #9a6300;  /* G2     watch    */
+  --color-elevated: #bd4809;  /* G3     elevated */
+  --color-alarm:    #c4142a;  /* G4–G5  severe   */
 
-  /* Typography — the -inter / -jetbrains vars are injected by next/font (see layout.tsx). */
-  --font-display:   var(--font-inter), 'Inter', system-ui, sans-serif;
-  --font-data:      var(--font-jetbrains), 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-  --font-body:      var(--font-inter), system-ui, -apple-system, sans-serif;
+  /* ---- Typography ----------------------------------------------------- */
+  --font-display: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-data:    var(--font-jetbrains), 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-body:    var(--font-inter), system-ui, -apple-system, sans-serif;
 
-  /* Spacing */
+  /* Deliberate type scale */
+  --text-2xs: 0.68rem;
+  --text-xs:  0.78rem;
+  --text-sm:  0.85rem;
+  --text-base:0.94rem;
+  --text-md:  1.05rem;
+  --text-lg:  1.2rem;
+  --text-xl:  1.55rem;
+  --text-2xl: 2.1rem;
+
+  /* ---- Spacing + shape ------------------------------------------------ */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.25rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
-  --radius:  0.5rem;
+  --radius:    0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* ---- Elevation (light-theme depth) ---------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(16, 32, 54, 0.06), 0 1px 3px rgba(16, 32, 54, 0.05);
+  --shadow-md: 0 6px 18px rgba(16, 32, 54, 0.08), 0 2px 6px rgba(16, 32, 54, 0.06);
 }
 
 *, *::before, *::after {
@@ -38,34 +70,45 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   background: var(--color-void);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.6;
+  font-size: var(--text-base);
+  line-height: 1.55;
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Utility: monospaced data readout */
 .data-mono {
   font-family: var(--font-data);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
-/* Severity state classes — used to colorize the dial and badges */
+/* Severity text colours — used to colourise dials, badges, values */
 .state-calm     { color: var(--color-calm); }
 .state-moderate { color: var(--color-moderate); }
 .state-elevated { color: var(--color-elevated); }
 .state-alarm    { color: var(--color-alarm); }
 
-/* Accessible focus ring */
+/* Severity chip fills — hue-preserving light tint + readable ink.
+   Used for scale badges and pills. */
+.chip-calm     { background: color-mix(in srgb, var(--color-calm) 13%, #fff);     color: var(--color-calm);     border: 1px solid color-mix(in srgb, var(--color-calm) 28%, #fff); }
+.chip-moderate { background: color-mix(in srgb, var(--color-moderate) 15%, #fff); color: var(--color-moderate); border: 1px solid color-mix(in srgb, var(--color-moderate) 30%, #fff); }
+.chip-elevated { background: color-mix(in srgb, var(--color-elevated) 14%, #fff); color: var(--color-elevated); border: 1px solid color-mix(in srgb, var(--color-elevated) 30%, #fff); }
+.chip-alarm    { background: color-mix(in srgb, var(--color-alarm) 12%, #fff);    color: var(--color-alarm);    border: 1px solid color-mix(in srgb, var(--color-alarm) 28%, #fff); }
+
+/* Accessible focus ring — brand blue, always visible on light */
 :focus-visible {
-  outline: 2px solid var(--color-moderate);
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
+  border-radius: 3px;
 }
 
 /* Reduced motion: disable non-essential animations */
@@ -74,5 +117,6 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
