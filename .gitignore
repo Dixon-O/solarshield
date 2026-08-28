@@ -27,5 +27,8 @@ coverage/
 # build guide (contains internal strategy -- must not be tracked)
 SolarShield-Build-Guide-for-Bob.md
 
+# private hosting/deployment guide (owner-only -- cloners must not host this project)
+DEPLOY-VERCEL.md
+
 # TypeScript build cache
 tsconfig.tsbuildinfo
