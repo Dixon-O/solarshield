@@ -1,0 +1,85 @@
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+}
+
+.replayBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+  font-size: 0.875rem;
+  color: var(--color-moderate);
+}
+
+.replayIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  margin-bottom: var(--space-6);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  border-left: 2px solid var(--color-border);
+  padding-left: var(--space-4);
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  text-align: left;
+  padding: var(--space-2);
+  border-radius: var(--radius);
+  cursor: pointer;
+  width: 100%;
+}
+.step:hover { background: rgba(255,255,255,0.04); color: var(--color-text); }
+.step:focus-visible { outline: 2px solid var(--color-moderate); }
+
+.stepActive {
+  background: rgba(245,158,11,0.08);
+  color: var(--color-text);
+  border-left: -2px solid var(--color-moderate);
+}
+
+.stepTime {
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.stepEvent {
+  font-size: 0.875rem;
+}
+
+.stepKp {
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  color: var(--color-alarm);
+}
+
+.panels {
+  display: grid;
+  gap: var(--space-4);
+}
