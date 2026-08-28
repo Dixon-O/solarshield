@@ -30,5 +30,8 @@ SolarShield-Build-Guide-for-Bob.md
 # private hosting/deployment guide (owner-only -- cloners must not host this project)
 DEPLOY-VERCEL.md
 
+# owner-only watsonx key-setup guide (secrets setup -- cloners run keyless)
+WATSONX-KEYS.md
+
 # TypeScript build cache
 tsconfig.tsbuildinfo
