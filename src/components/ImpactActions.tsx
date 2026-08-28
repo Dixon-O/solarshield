@@ -11,9 +11,11 @@ import styles from "./ImpactActions.module.css";
 
 interface ImpactActionsProps {
   scale: GeomagneticScale | null;
+  /** When provided, the NOAA reference opens in-app instead of leaving the site. */
+  onOpenScales?: () => void;
 }
 
-export function ImpactActions({ scale }: ImpactActionsProps) {
+export function ImpactActions({ scale, onOpenScales }: ImpactActionsProps) {
   if (!scale) {
     return (
       <div className={styles.panel}>
@@ -31,14 +33,24 @@ export function ImpactActions({ scale }: ImpactActionsProps) {
       <div className={styles.scaleHeader}>
         <span className={styles.scaleBadge}>{scale}</span>
         <span className={styles.scaleName}>{impact.scaleName}</span>
-        <a
-          href={impact.citationUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.citation}
-        >
-          NOAA Scale Reference ↗
-        </a>
+        {onOpenScales ? (
+          <button
+            type="button"
+            className={styles.citation}
+            onClick={onOpenScales}
+          >
+            NOAA scales ›
+          </button>
+        ) : (
+          <a
+            href={impact.citationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.citation}
+          >
+            NOAA Scale Reference ↗
+          </a>
+        )}
       </div>
 
       {scale === "G0" ? (
