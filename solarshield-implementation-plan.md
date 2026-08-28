@@ -1,5 +1,34 @@
 # SolarShield — Implementation Plan
 
+> **Reality check — corrections to this plan (2026-08-28).** The plan below is
+> the original build brief. A few things landed differently in the shipped code;
+> where they differ, the code wins and this note is the source of truth:
+>
+> - **Corpus is hand-curated, not Docling-parsed.** The NOAA Space Weather
+>   Scales corpus (`src/lib/corpus/`) was written by hand from the official NOAA
+>   text, with a citation URL on every chunk. Docling is **not** used. The
+>   grounding claim ("Ask" only cites the corpus) still holds — it just wasn't
+>   produced by Docling. Do not claim Docling in the submission.
+> - **The offline narrator is the deterministic template.** It always works and
+>   never invents a number. **Granite Nano on-device** (WebGPU, via
+>   `@huggingface/transformers`) is a real, wired *optional enhancement*
+>   (`src/lib/narration/nano.ts`) that self-activates only where the model and
+>   WebGPU are present, and falls back to the template otherwise. The package is
+>   not bundled by default, so treat Nano as "designed and code-complete,"
+>   the template as the guaranteed offline path.
+> - **MCP tools run in-process, not as a standalone server.** The six typed
+>   tools are real (`src/lib/mcp/tools.ts`) and the narration pipeline calls
+>   them so Granite retrieves grounded values instead of hallucinating. The
+>   standalone `dist/mcp-server.js` in `.bob/mcp.json` was never built — do not
+>   claim a runnable standalone server.
+> - **Shipping is via Capacitor, not Expo/EAS.** EAS only builds React Native;
+>   SolarShield is a Next.js web app, so it ships to iOS + Android by wrapping
+>   the static export with Capacitor. See `BUILD-NATIVE.md`. Ignore the EAS
+>   steps in the M7 section below.
+> - **Still needs the user's IBM keys:** live-verify the watsonx model IDs with
+>   one real call before the demo (see the audit, Problem 5). Until then, treat
+>   the cloud-Granite path as unverified.
+
 ## Overview
 
 SolarShield is a space-weather early-warning copilot built for the IBM AI Builders Challenge ("Advance Space Exploration with AI"). It watches live solar and geomagnetic data and tells users what is about to hit, when, how bad, and what to do — and keeps working on-device when the storm knocks out the network.
