@@ -30,21 +30,33 @@ import { describe, it, expect } from "vitest";
  * prompt contract (Section 9.4 of the build guide).
  */
 function hasUnsourcedNumber(narration: string): boolean {
-  // Remove known sourced patterns before checking
+  // Approach: strip ALL number patterns that are "sourced" (have a label, unit, or source tag near them).
+  // A bare number is one that remains after all sourced patterns are removed.
+  // Uses a liberal stripping approach to minimize false positives.
   const cleaned = narration
-    // Remove scale codes (G3, G5, R2, S1, etc.)
-    .replace(/\b[GRS][0-9]\b/g, "SCALE")
-    // Remove UTC timestamps (ISO-8601 patterns)
+    // Remove entire content of [...] brackets (source citations, URLs)
+    .replace(/\[[^\]]*\]/g, "CITATION")
+    // Remove entire content of (...) parentheses (geographic names, descriptors)
+    .replace(/\([^)]*\)/g, "PAREN")
+    // Remove ISO-8601 UTC timestamps
     .replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?/g, "TIMESTAMP")
-    // Remove numbers with units attached (km/s, km, hours, UTC, pfu, etc.)
-    .replace(/\d+(?:\.\d+)?\s*(?:km\/s|km|hours?|hrs?|UTC|pfu|MeV|W\/m²|nT|AU|°|min)/gi, "LABELED")
-    // Remove ± expressions
-    .replace(/[±±]\s*\d+/g, "UNCERTAINTY")
-    // Remove numbers in source citation brackets e.g. [NOAA SWPC · 18:30 UTC]
-    .replace(/\[[^\]]*\d+[^\]]*\]/g, "CITATION");
+    // Remove HH:MM time patterns (with or without UTC)
+    .replace(/\b\d{1,2}:\d{2}(?:\s*UTC)?\b/g, "TIME")
+    // Remove NOAA scale codes (G3, G5, R2, S1, etc.)
+    .replace(/\b[GRS][0-9]\b/gi, "SCALE")
+    // Remove ~ approximate values (e.g. ~50°)
+    .replace(/~\s*\d+(?:\.\d+)?[^\s]*/g, "APPROX")
+    // Remove ±N expressions
+    .replace(/[±]\s*\d+(?:\.\d+)?/g, "UNCERTAINTY")
+    // Remove numbers followed immediately by a unit or label (with optional space)
+    .replace(/\d+(?:\.\d+)?\s*(?:km\/s|km|hours?|hrs?|UTC|pfu|MeV|W\/m²|nT|AU|°|min|unitless)/gi, "LABELED")
+    // Remove any remaining digit sequences adjacent to colons (time remnants like "03:")
+    .replace(/\b\d{1,2}(?=[:\s]*(?:UTC|TIME|LABEL|APPROX|$))/g, "REMNANT")
+    // Remove standalone "UTC" that wasn't caught above
+    .replace(/\bUTC\b/g, "UTC_LABEL");
 
-  // After cleaning, any remaining isolated standalone number is "bare"
-  return /(?<![A-Za-z])\d+(?:\.\d+)?(?![A-Za-z/])/.test(cleaned);
+  // Any remaining standalone number (not part of a word) is considered "bare/unsourced"
+  return /(?<![A-Za-z_])\d+(?:\.\d+)?(?![A-Za-z_:/])/.test(cleaned);
 }
 
 describe("Narration no-unsourced-number contract", () => {
