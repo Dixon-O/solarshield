@@ -18,12 +18,18 @@ export interface OfflineStatus {
 }
 
 export function useOfflineStatus(): OfflineStatus {
-  const [isOffline, setIsOffline] = useState(
-    typeof navigator !== "undefined" ? !navigator.onLine : false,
-  );
+  // Start "online" on both server and first client paint so the server-rendered
+  // HTML matches the first client render (no hydration mismatch). The real
+  // navigator.onLine value is read in the effect below, after mount.
+  const [isOffline, setIsOffline] = useState(false);
   const [lastKnownUtc, setLastKnownUtc] = useState<string | null>(null);
 
   useEffect(() => {
+    // Correct the online/offline state now that we're on the client, post-hydration.
+    if (typeof navigator !== "undefined") {
+      setIsOffline(!navigator.onLine);
+    }
+
     // Load the last-known timestamp from cache on mount
     loadSnapshot()
       .then((cached) => {
