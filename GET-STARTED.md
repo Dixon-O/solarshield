@@ -74,7 +74,7 @@ npm run build
 ```
 
 What "good" looks like: typecheck and lint finish with no errors, the tests report
-**93 passed**, and the build ends without an error.
+**98 passed**, and the build ends without an error.
 
 ### Click through the app
 
