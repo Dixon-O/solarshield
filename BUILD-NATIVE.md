@@ -1,16 +1,22 @@
-# Shipping SolarShield to iOS + Android
+# Getting SolarShield onto phones
 
-SolarShield is one Next.js web app. Capacitor wraps that same app into native
-iOS and Android binaries, so the entire cockpit UI, the offline countdown, and
-the PWA all come along unchanged — no rewrite.
+SolarShield is one Next.js web app. There are two ways to put it on a phone, and
+they stack:
 
-This is the packaging path chosen over Expo EAS Build. EAS only builds React
-Native apps; SolarShield is a web app, so EAS cannot build it as-is. Capacitor
-is the tool that fits.
+1. **Installable PWA — both platforms, today, zero cost.** iPhone and Android can
+   install SolarShield straight from the browser; it opens full-screen and works
+   offline. This is the shipping path for iPhone right now. Steps are in
+   **[INSTALL.md](./INSTALL.md)** — that's the link to hand to judges and users.
+2. **Native binaries via Capacitor.** Capacitor wraps the *same* web app into
+   native apps with no rewrite. **Android builds now on Windows.** iOS needs a Mac
+   and a paid Apple developer account, so it's an optional later step — until then
+   iPhone users install the PWA above.
+
+The rest of this page is the native (Capacitor) path.
 
 ---
 
-## How it fits together
+## How the native shell fits together
 
 - The **hosted web deployment is the backend.** Its `/api/snapshot` and
   `/api/ask` routes run there. `/api/ask` holds the IBM watsonx keys, so it must
@@ -22,16 +28,21 @@ is the tool that fits.
   service worker), so the countdown keeps running with no network — the core
   promise of the app holds inside the native shell too.
 
+This is the packaging path chosen over Expo EAS Build. EAS only builds React
+Native apps; SolarShield is a web app, so EAS cannot build it as-is. Capacitor
+is the tool that fits.
+
 ---
 
 ## Before you start
 
 - **Node** (already installed for the web app).
-- **Android:** [Android Studio](https://developer.android.com/studio) — builds
-  on your Windows machine.
-- **iOS:** a **Mac with Xcode**, or a cloud-Mac service (Codemagic, Ionic
-  Appflow, or a GitHub macOS runner). An iOS binary cannot be built on Windows.
-  Everything else below works on Windows.
+- **Android:** [Android Studio](https://developer.android.com/studio) — builds on
+  your **Windows** machine. This is the native target you can ship today.
+- **iOS (optional, later):** a **Mac with Xcode** *and* the **Apple Developer
+  Program ($99/year)** to run on a real iPhone or TestFlight. An iOS binary cannot
+  be built on Windows. Until you have both, the iPhone story is the PWA in
+  [INSTALL.md](./INSTALL.md) — which needs neither.
 
 ---
 
@@ -47,7 +58,7 @@ npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios
 
 `capacitor.config.json` is already in the repo (app id `app.solarshield`, web
 dir `out`), so there is nothing to initialise. Build the web bundle once, then
-add the platforms:
+add Android:
 
 ```
 # Windows PowerShell
@@ -55,7 +66,7 @@ $env:NEXT_PUBLIC_API_BASE="https://YOUR-DEPLOYMENT"; npm run build:native
 npx cap add android
 ```
 
-On a Mac, also run:
+Later, on a Mac, add iOS the same way:
 
 ```
 npx cap add ios
