@@ -1,20 +1,22 @@
 .panel {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
 }
 
 .title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: var(--text-lg);
+  font-weight: 700;
   color: var(--color-text);
   font-family: var(--font-display);
+  letter-spacing: -0.01em;
   margin-bottom: var(--space-2);
 }
 
 .hint {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--color-muted);
   margin-bottom: var(--space-4);
 }
@@ -27,63 +29,73 @@
 
 .textarea {
   width: 100%;
-  background: rgba(255,255,255,0.04);
+  background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 0.9375rem;
+  font-size: var(--text-base);
   padding: var(--space-3);
   resize: vertical;
   outline: none;
 }
+.textarea::placeholder { color: var(--color-muted); }
 .textarea:focus {
-  border-color: var(--color-moderate);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-tint);
 }
 
 .button {
   align-self: flex-end;
-  background: var(--color-moderate);
-  color: #000;
+  background: var(--color-brand);
+  color: #fff;
   border: none;
   border-radius: var(--radius);
   padding: var(--space-2) var(--space-6);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 700;
   cursor: pointer;
 }
+.button:hover:not(:disabled) { background: var(--color-brand-ink); }
 .button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 .button:focus-visible {
-  outline: 2px solid var(--color-moderate);
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
 
 .error {
   margin-top: var(--space-3);
   color: var(--color-alarm);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .result {
-  margin-top: var(--space-6);
+  margin-top: var(--space-5);
   padding-top: var(--space-4);
   border-top: 1px solid var(--color-border);
 }
 
 .modeTag {
+  display: inline-block;
   font-family: var(--font-data);
-  font-size: 0.6875rem;
-  color: var(--color-muted);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  color: var(--color-brand-ink);
+  background: var(--color-brand-tint);
+  border: 1px solid color-mix(in srgb, var(--color-brand) 22%, #fff);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-2);
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-3);
 }
 
 .answer {
-  font-size: 0.9375rem;
+  font-size: var(--text-base);
   color: var(--color-text);
   line-height: 1.7;
   margin-bottom: var(--space-4);
@@ -94,7 +106,7 @@
   align-items: flex-start;
   gap: var(--space-3);
   color: var(--color-muted);
-  font-size: 0.9375rem;
+  font-size: var(--text-base);
 }
 
 .abstentionIcon {
@@ -110,7 +122,7 @@
 }
 
 .sourcesLabel {
-  font-size: 0.6875rem;
+  font-size: var(--text-2xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-muted);
@@ -118,11 +130,12 @@
 
 .source {
   font-family: var(--font-data);
-  font-size: 0.6875rem;
-  color: var(--color-muted);
-  background: rgba(255,255,255,0.04);
-  padding: 0.125rem 0.375rem;
-  border-radius: 4px;
+  font-size: var(--text-2xs);
+  color: var(--color-data);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
 }
-.source a { color: var(--color-muted); text-decoration: none; }
-.source a:hover { color: var(--color-data); }
+.source a { color: var(--color-brand); text-decoration: none; }
+.source a:hover { color: var(--color-brand-ink); }
