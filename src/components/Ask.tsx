@@ -6,6 +6,7 @@
  */
 
 import { useState } from "react";
+import { apiUrl } from "@/lib/config/api";
 import type { NarrationResult } from "@/lib/narration";
 import styles from "./Ask.module.css";
 
@@ -24,7 +25,7 @@ export function Ask() {
     setResult(null);
 
     try {
-      const resp = await fetch("/api/ask", {
+      const resp = await fetch(apiUrl("/api/ask"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: question.trim() }),
