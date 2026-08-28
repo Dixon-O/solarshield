@@ -2,71 +2,39 @@
  * Narration orchestrator — the single entry point for all narration.
  *
  * Pipeline (online):
- *   MCP tools → cloud Granite → Guardian gate → UI
- *   Guardian fail or cloud unavailable → Granite Nano (M4) → template fallback → UI
- * Pipeline (offline / isOffline=true):
- *   Granite Nano on-device → template fallback → UI
+ *   MCP tools → cloud Granite (watsonx.ai) → Granite Guardian gate → UI
+ *   Cloud unavailable or Guardian blocks → grounded deterministic engine → UI
+ * Pipeline (offline, isOffline=true, or run client-side from cache):
+ *   grounded deterministic engine (real cached NOAA/NASA values) → UI
  *
- * On insufficient evidence → abstention response → UI
+ * The grounded engine (./grounded) is pure and fully sourced — it is the
+ * honest degradation path, not a stand-in for a model that never runs.
+ * On insufficient evidence → abstention.
  */
 
 import { callCloudNarration } from "./cloud";
 import { gateWithGuardian } from "./guardian";
-// nano is dynamically imported at call time to keep it out of the server bundle
+import { renderAbstention } from "./template";
 import {
-  renderConditionsSummary,
-  renderArrivalSummary,
-  renderImpactSummary,
-  renderAbstention,
-} from "./template";
-import {
-  getCurrentConditions,
-  getForecast,
-  estimateArrivalTool,
-  classifySeverityTool,
-  lookupImpactTool,
-} from "@/lib/mcp/tools";
+  checkSufficientEvidence,
+  assembleStructuredValues,
+  narrateGrounded,
+  buildSources,
+  type NarrationSource,
+} from "./grounded";
 import type { SpaceWeatherSnapshot } from "@/lib/data/types";
-import type { GeomagneticScale } from "@/lib/core/types";
+
+/** Which engine produced the answer — surfaced to the user as a visible tag. */
+export type NarrationEngine = "granite-cloud" | "grounded";
 
 export interface NarrationResult {
   answer: string;
-  sources: Array<{ label: string; url?: string }>;
+  sources: NarrationSource[];
   abstained: boolean;
-  /** true if narration came from cloud Granite; false if template or on-device */
+  /** Which engine produced this answer. */
+  engine: NarrationEngine;
+  /** Convenience flag: true iff engine === "granite-cloud" (cloud IBM Granite). */
   usedCloudModel: boolean;
-  /** true if narration came from on-device Granite Nano (wired in M4) */
-  usedOnDeviceModel: boolean;
-}
-
-/**
- * Determine if a question has sufficient evidence to answer.
- * Returns null if answerable, or an abstention reason string if not.
- */
-function checkSufficientEvidence(
-  question: string,
-  snapshot: SpaceWeatherSnapshot,
-): string | null {
-  const q = question.toLowerCase();
-
-  // Questions about specific CME positions/trajectories require real-time data
-  if (
-    (q.includes("position") || q.includes("trajectory") || q.includes("exact location")) &&
-    snapshot.recentCmes.length === 0
-  ) {
-    return "No CME event data is currently available.";
-  }
-
-  // Questions about current conditions require live data
-  if (
-    (q.includes("current") || q.includes("right now") || q.includes("happening")) &&
-    snapshot.latestKp === null &&
-    snapshot.latestSolarWind === null
-  ) {
-    return "Current space-weather data is unavailable.";
-  }
-
-  return null; // sufficient evidence
 }
 
 /**
@@ -74,45 +42,29 @@ function checkSufficientEvidence(
  *
  * @param question  - The user's natural-language question
  * @param snapshot  - The current space-weather snapshot (from /api/snapshot)
- * @param isOffline - If true, skip cloud model and use template directly (Nano wired in M4)
+ * @param isOffline - If true, skip the cloud model and answer from the grounded
+ *                    deterministic engine directly (used by the offline path).
  */
 export async function narrate(
   question: string,
   snapshot: SpaceWeatherSnapshot,
   isOffline = false,
 ): Promise<NarrationResult> {
-  // Check for sufficient evidence
+  // Abstain early when evidence is insufficient (skips the model entirely).
   const abstentionReason = checkSufficientEvidence(question, snapshot);
   if (abstentionReason) {
     return {
       answer: renderAbstention(abstentionReason),
       sources: [],
       abstained: true,
+      engine: "grounded",
       usedCloudModel: false,
-      usedOnDeviceModel: false,
     };
   }
 
-  // Assemble structured values via MCP tools
-  const conditions = getCurrentConditions(snapshot);
-  const forecast = getForecast(snapshot);
-  const scale: GeomagneticScale | null = classifySeverityTool(conditions.kp);
-  const arrival = estimateArrivalTool(forecast.mostRecentCme?.speedKmS);
-  const impact = scale ? lookupImpactTool(scale) : null;
-
-  const structuredValues: Record<string, unknown> = {
-    conditions,
-    forecast,
-    scale,
-    arrival,
-    impact: impact
-      ? { scale: impact.scale, scaleName: impact.scaleName, effects: impact.effects }
-      : null,
-    question,
-  };
-
-  // Online path: try cloud Granite + Guardian
+  // Online path: try cloud Granite, gated by Granite Guardian.
   if (!isOffline) {
+    const { structuredValues, scale } = assembleStructuredValues(question, snapshot);
     try {
       const cloudResult = await callCloudNarration({ question, structuredValues });
 
@@ -124,97 +76,25 @@ export async function narrate(
             answer: guardianResult.text,
             sources: buildSources(snapshot, scale),
             abstained: false,
+            engine: "granite-cloud",
             usedCloudModel: true,
-            usedOnDeviceModel: false,
           };
         }
-        // Guardian blocked — fall through to template
+        // Guardian blocked — fall through to the grounded engine.
       }
     } catch {
-      // Cloud narration failed — fall through to template (no silent catch:
-      // the error is swallowed intentionally here because the template fallback
-      // is a first-class designed degradation path, not an error state)
+      // Cloud narration failed — fall through to the grounded engine.
+      // This is a designed degradation path, not a swallowed error state.
     }
   }
 
-  // Offline / fallback: try Granite Nano first, then deterministic template
-  // Dynamic import keeps nano.ts (and @huggingface/transformers) out of the server bundle
-  try {
-    const { callNanoNarration } = await import("./nano");
-    const nanoResult = await callNanoNarration(question, structuredValues);
-    if (nanoResult?.success) {
-      return {
-        answer: nanoResult.text,
-        sources: buildSources(snapshot, scale),
-        abstained: false,
-        usedCloudModel: false,
-        usedOnDeviceModel: true,
-      };
-    }
-  } catch {
-    // Nano unavailable — fall through to template (intentional degradation path)
-  }
-
-  const templateAnswer = buildTemplateAnswer(question, conditions, forecast, scale, arrival);
-
+  // Grounded deterministic engine: real, fully-sourced values, no model.
+  const grounded = narrateGrounded(question, snapshot);
   return {
-    answer: templateAnswer,
-    sources: buildSources(snapshot, scale),
-    abstained: false,
+    answer: grounded.answer,
+    sources: grounded.sources,
+    abstained: grounded.abstained,
+    engine: "grounded",
     usedCloudModel: false,
-    usedOnDeviceModel: false,
   };
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function buildTemplateAnswer(
-  _question: string,
-  conditions: ReturnType<typeof getCurrentConditions>,
-  forecast: ReturnType<typeof getForecast>,
-  scale: GeomagneticScale | null,
-  arrival: ReturnType<typeof estimateArrivalTool>,
-): string {
-  const parts: string[] = [];
-
-  if (scale !== null) {
-    parts.push(renderConditionsSummary(conditions, scale));
-  } else {
-    parts.push(renderConditionsSummary(conditions, null));
-  }
-
-  parts.push(renderArrivalSummary(arrival, forecast));
-
-  if (scale && scale !== "G0") {
-    parts.push(renderImpactSummary(scale));
-  }
-
-  return parts.join(" ");
-}
-
-function buildSources(
-  snapshot: SpaceWeatherSnapshot,
-  scale: GeomagneticScale | null,
-): Array<{ label: string; url?: string }> {
-  const sources: Array<{ label: string; url?: string }> = [];
-
-  if (snapshot.latestKp) {
-    sources.push({ label: `NOAA SWPC · ${snapshot.latestKp.timeTagUtc}` });
-  }
-  if (snapshot.latestSolarWind) {
-    sources.push({ label: `NOAA SWPC RTSW · ${snapshot.latestSolarWind.timeTagUtc}` });
-  }
-  if (snapshot.recentCmes.length > 0) {
-    sources.push({ label: `NASA DONKI · ${snapshot.recentCmes[0].fetchedAtUtc}` });
-  }
-  if (scale && scale !== "G0") {
-    sources.push({
-      label: "NOAA Space Weather Scales",
-      url: "https://www.swpc.noaa.gov/noaa-scales-explanation",
-    });
-  }
-
-  return sources;
 }
