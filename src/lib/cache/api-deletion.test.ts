@@ -31,13 +31,6 @@ vi.mock("@/lib/narration/guardian", () => ({
   gateWithGuardian: vi.fn().mockResolvedValue({ passed: false, text: null }),
 }));
 
-// Mock Granite Nano as unavailable (WebGPU not available)
-vi.mock("@/lib/narration/nano", () => ({
-  callNanoNarration: vi.fn().mockResolvedValue(null),
-  isNanoReady: vi.fn().mockReturnValue(false),
-  resetNanoPipeline: vi.fn(),
-}));
-
 // Seeded snapshot for tests — defined before vi.mock calls
 const SEEDED_SNAPSHOT = {
   snapshotUtc: "2024-05-10T12:00:00.000Z",
@@ -120,7 +113,7 @@ describe("API-deletion test — all hosted services unavailable", () => {
     expect(cached!.snapshot.snapshotUtc).toBe("2024-05-10T12:00:00.000Z");
   });
 
-  it("narrate still produces an answer using template fallback (no models, no APIs)", async () => {
+  it("narrate still produces an answer using the grounded engine (no models, no APIs)", async () => {
     // Use the seeded snapshot as the "last known"
     const result = await narrate("What are current conditions?", SEEDED_SNAPSHOT, true);
 
@@ -129,11 +122,11 @@ describe("API-deletion test — all hosted services unavailable", () => {
     expect(result.answer).toBeTruthy();
     expect(result.answer.length).toBeGreaterThan(20);
 
-    // Must not have used cloud or Nano (both mocked as unavailable)
+    // Must have used the grounded engine — no cloud model (mocked unavailable)
     expect(result.usedCloudModel).toBe(false);
-    expect(result.usedOnDeviceModel).toBe(false);
+    expect(result.engine).toBe("grounded");
 
-    // The template answer must still be grounded — no bare unsourced numbers
+    // The grounded answer must still be sourced — no bare unsourced numbers
     // (imported from the contract test)
   });
 
@@ -153,7 +146,7 @@ describe("API-deletion test — all hosted services unavailable", () => {
     expect(result.answer).toContain("don't have");
   });
 
-  it("the degradation ladder works: no cloud + no Nano = template output (not blank screen)", async () => {
+  it("the degradation ladder works: no cloud = grounded output (not blank screen)", async () => {
     const result = await narrate("What is the storm level?", SEEDED_SNAPSHOT, true);
     expect(result.answer).not.toBe("");
     expect(result.answer).not.toBeNull();
