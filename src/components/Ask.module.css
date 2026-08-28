@@ -1,0 +1,128 @@
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  margin-bottom: var(--space-2);
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-4);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  padding: var(--space-3);
+  resize: vertical;
+  outline: none;
+}
+.textarea:focus {
+  border-color: var(--color-moderate);
+}
+
+.button {
+  align-self: flex-end;
+  background: var(--color-moderate);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-6);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.button:focus-visible {
+  outline: 2px solid var(--color-moderate);
+  outline-offset: 2px;
+}
+
+.error {
+  margin-top: var(--space-3);
+  color: var(--color-alarm);
+  font-size: 0.875rem;
+}
+
+.result {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.modeTag {
+  font-family: var(--font-data);
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.answer {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+}
+
+.abstention {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.abstentionIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sourcesLabel {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.source {
+  font-family: var(--font-data);
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  background: rgba(255,255,255,0.04);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+}
+.source a { color: var(--color-muted); text-decoration: none; }
+.source a:hover { color: var(--color-data); }
