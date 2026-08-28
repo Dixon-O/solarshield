@@ -16,6 +16,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { apiUrl } from "@/lib/config/api";
 import type { SpaceWeatherSnapshot } from "@/lib/data/types";
 import {
   classifyGeomagnetic,
@@ -49,7 +50,7 @@ export default function Home() {
 
     async function load() {
       try {
-        const resp = await fetch("/api/snapshot", { cache: "no-store" });
+        const resp = await fetch(apiUrl("/api/snapshot"), { cache: "no-store" });
         if (!resp.ok) throw new Error(`snapshot ${resp.status}`);
         const data = (await resp.json()) as SpaceWeatherSnapshot;
         if (!alive) return;
