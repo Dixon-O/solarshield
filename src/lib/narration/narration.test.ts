@@ -6,17 +6,12 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock cloud, guardian, and nano to isolate orchestrator logic
+// Mock cloud and guardian to isolate orchestrator logic
 vi.mock("./cloud", () => ({
   callCloudNarration: vi.fn(),
 }));
 vi.mock("./guardian", () => ({
   gateWithGuardian: vi.fn(),
-}));
-vi.mock("./nano", () => ({
-  callNanoNarration: vi.fn().mockResolvedValue(null),
-  isNanoReady: vi.fn().mockReturnValue(false),
-  resetNanoPipeline: vi.fn(),
 }));
 
 import { narrate } from "./index";
@@ -140,6 +135,7 @@ describe("narrate — Guardian fail → template fallback", () => {
 
     const result = await narrate("What are the impacts?", FULL_SNAPSHOT);
     expect(result.usedCloudModel).toBe(true);
+    expect(result.engine).toBe("granite-cloud");
     expect(result.answer).toBe(cloudText);
     expect(result.abstained).toBe(false);
   });
@@ -156,10 +152,10 @@ describe("narrate — template output contract", () => {
     expect(hasUnsourcedNumber(result.answer)).toBe(false);
   });
 
-  it("offline flag bypasses cloud and uses template", async () => {
+  it("offline flag bypasses cloud and uses the grounded engine", async () => {
     const result = await narrate("What is the storm level?", FULL_SNAPSHOT, true);
     expect(result.usedCloudModel).toBe(false);
-    expect(result.usedOnDeviceModel).toBe(false); // Nano wired in M4
+    expect(result.engine).toBe("grounded");
     expect(result.answer).toBeTruthy();
   });
 });
