@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type { SpaceWeatherSnapshot } from "@/lib/data/types";
 import {
   classifyGeomagnetic,
@@ -171,6 +172,9 @@ export default function Home() {
           Sources: NOAA SWPC · NASA DONKI. Guidance: NOAA Space Weather Scales.
           Arrival estimates are physics-based with a ±6&nbsp;hour window.
         </span>
+        <Link href="/judges" className={styles.judgesLink}>
+          Judges’ demonstration ›
+        </Link>
       </footer>
     </div>
   );
