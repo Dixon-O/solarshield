@@ -204,7 +204,22 @@ SolarShield is a space-weather early-warning copilot built for the IBM AI Builde
 - Guide §9.2 — prompt injection: treat fetched data as untrusted content, not instructions; tool outputs data-typed
 - Guide §9.4 — narration test that fails build if unsourced number emitted
 
-**Status:** [ ] pending
+**Status:** [x] done
+
+**§9.8 self-review results (M3):**
+1. ✅ lint clean, typecheck clean, 83/83 tests pass, production build clean — `/api/ask` and `/api/snapshot` both ƒ dynamic
+2. ✅ No secrets in diff — `WATSONX_API_KEY`, `WATSONX_PROJECT_ID`, `WATSONX_URL`, `NASA_API_KEY` all read from `process.env` server-side only; IAM token fetch never logs credentials
+3. ✅ All inputs validated — question length capped at 500 chars; input treated as data not as model instruction (prompt injection prevention); no user-supplied URLs fetched
+4. ✅ LLM never emits numbers — cloud.ts prompt explicitly forbids computation; `no-unsourced-number.test.ts` passes; Guardian gate on every cloud output
+5. ✅ Offline path: `narrate(q, snap, isOffline=true)` tested and returns template; Nano wired in M4
+6. ✅ No invented packages — only built-in `fetch` used; all imports verified
+7. ✅ No silent catch — narration orchestrator has one intentional swallow with a documented reason (template fallback is a designed degradation path); Guardian API errors return `passed: false` (fail-safe)
+8. ✅ Debug files deleted; no dead code; no console.log in production paths
+9. ✅ Source attribution flows through to `NarrationResult.sources` array
+10. ✅ 3 atomic commits; no push to main
+11. ✅ No large payload dumps; mocks used for cloud API calls in tests
+
+**Context for M4:** `narrate()` in `src/lib/narration/index.ts` has `isOffline` param and `usedOnDeviceModel` field — both wired for Nano insertion in M4. Template fallback is already the offline path. `assembleSnapshot()` in `src/lib/data/snapshot.ts` handles all fetch failures gracefully.
 
 ---
 
