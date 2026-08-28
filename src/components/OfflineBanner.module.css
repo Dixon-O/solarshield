@@ -1,0 +1,25 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #1a1f2e;
+  color: #a0aec0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #2d3748;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.icon {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+    transition: none;
+  }
+}

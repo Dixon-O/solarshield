@@ -1,16 +1,18 @@
 /**
  * Narration orchestrator — the single entry point for all narration.
  *
- * Pipeline:
- *   MCP tools (structured values) → cloud Granite → Guardian gate → UI
- *   On Guardian fail or cloud unavailable → deterministic template → UI
- *   On insufficient evidence → abstention response → UI
+ * Pipeline (online):
+ *   MCP tools → cloud Granite → Guardian gate → UI
+ *   Guardian fail or cloud unavailable → Granite Nano (M4) → template fallback → UI
+ * Pipeline (offline / isOffline=true):
+ *   Granite Nano on-device → template fallback → UI
  *
- * The offline/on-device Granite Nano path is wired in M4.
+ * On insufficient evidence → abstention response → UI
  */
 
 import { callCloudNarration } from "./cloud";
 import { gateWithGuardian } from "./guardian";
+// nano is dynamically imported at call time to keep it out of the server bundle
 import {
   renderConditionsSummary,
   renderArrivalSummary,
@@ -135,8 +137,24 @@ export async function narrate(
     }
   }
 
-  // Offline or fallback path: deterministic templates
-  // (M4 will insert Granite Nano here before the template fallback)
+  // Offline / fallback: try Granite Nano first, then deterministic template
+  // Dynamic import keeps nano.ts (and @huggingface/transformers) out of the server bundle
+  try {
+    const { callNanoNarration } = await import("./nano");
+    const nanoResult = await callNanoNarration(question, structuredValues);
+    if (nanoResult?.success) {
+      return {
+        answer: nanoResult.text,
+        sources: buildSources(snapshot, scale),
+        abstained: false,
+        usedCloudModel: false,
+        usedOnDeviceModel: true,
+      };
+    }
+  } catch {
+    // Nano unavailable — fall through to template (intentional degradation path)
+  }
+
   const templateAnswer = buildTemplateAnswer(question, conditions, forecast, scale, arrival);
 
   return {

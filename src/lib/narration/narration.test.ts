@@ -6,12 +6,17 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock cloud and guardian to isolate orchestrator logic
+// Mock cloud, guardian, and nano to isolate orchestrator logic
 vi.mock("./cloud", () => ({
   callCloudNarration: vi.fn(),
 }));
 vi.mock("./guardian", () => ({
   gateWithGuardian: vi.fn(),
+}));
+vi.mock("./nano", () => ({
+  callNanoNarration: vi.fn().mockResolvedValue(null),
+  isNanoReady: vi.fn().mockReturnValue(false),
+  resetNanoPipeline: vi.fn(),
 }));
 
 import { narrate } from "./index";
