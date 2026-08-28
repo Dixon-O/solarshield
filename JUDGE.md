@@ -33,6 +33,7 @@ Controls: **Back / Next / Auto-play / Restart**, or the **←/→** arrow keys. 
 - **Ask** tab — type *"What's happening right now?"* You get a grounded answer citing the live Kp, its source, and timestamp. **This works with zero API keys** — proof the deterministic engine stands on its own.
 - **Replay** tab — play back a historical storm and watch the system escalate.
 - **Kill the network** (DevTools → Network → Offline, or airplane mode) and reload. The last-known snapshot and NOAA corpus are served from on-device cache — the app survives.
+- **Want it on your own phone?** It installs straight from the browser — a few taps, no App Store. See [INSTALL.md](./INSTALL.md).
 
 ---
 
