@@ -1,17 +1,78 @@
+/* SolarShield Design Tokens — cockpit instrument palette */
+
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a2e;
+  --color-void:     #0a0e1a;
+  --color-surface:  #111827;
+  --color-border:   #1e2d40;
+  --color-muted:    #64748b;
+  --color-text:     #e2e8f0;
+  --color-data:     #94a3b8;
+
+  /* Alarm accent — ONLY for active threat states (G3+). Never use decoratively. */
+  --color-alarm:    #ef4444;
+
+  /* Severity state colors */
+  --color-calm:     #22c55e;
+  --color-moderate: #f59e0b;
+  --color-elevated: #f97316;
+
+  /* Typography */
+  --font-display:   'Inter', system-ui, sans-serif;
+  --font-data:      'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-body:      system-ui, -apple-system, sans-serif;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --radius:  0.5rem;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--color-void);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
   line-height: 1.6;
+  min-height: 100dvh;
+}
+
+/* Utility: monospaced data readout */
+.data-mono {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Severity state classes — used to colorize the dial and badges */
+.state-calm     { color: var(--color-calm); }
+.state-moderate { color: var(--color-moderate); }
+.state-elevated { color: var(--color-elevated); }
+.state-alarm    { color: var(--color-alarm); }
+
+/* Accessible focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-moderate);
+  outline-offset: 2px;
+}
+
+/* Reduced motion: disable non-essential animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
