@@ -12,7 +12,7 @@ out/
 dist/
 build/
 
-# expo / eas
+# capacitor native projects (regenerated with `npx cap add`)
 .expo/
 android/
 ios/
