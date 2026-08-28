@@ -12,7 +12,11 @@
     "typecheck": "tsc --noEmit",
     "test:watch": "vitest",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:native": "node scripts/build-native.mjs",
+    "cap:sync": "cap sync",
+    "cap:android": "cap open android",
+    "cap:ios": "cap open ios"
   },
   "keywords": [],
   "author": "",
