@@ -2,33 +2,44 @@
 
 /**
  * Ask — natural-language question interface.
- * Calls /api/ask; shows citations; abstention state; offline indicator.
+ * Calls /api/ask; shows citations and the abstention state.
+ *
+ * Offline: if the server is unreachable, the question is answered in the
+ * browser by the grounded deterministic engine, using the last snapshot
+ * cached in IndexedDB. Real NOAA/NASA values, no server, no model — the
+ * same sourced answer, just computed locally.
  */
 
 import { useState } from "react";
 import { apiUrl } from "@/lib/config/api";
 import type { NarrationResult } from "@/lib/narration";
+import { narrateGrounded } from "@/lib/narration/grounded";
+import { loadSnapshot } from "@/lib/cache/indexeddb";
 import styles from "./Ask.module.css";
 
 export function Ask() {
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<NarrationResult | null>(null);
+  /** Set when the answer was computed offline; carries the cached snapshot time. */
+  const [offlineCachedUtc, setOfflineCachedUtc] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!question.trim()) return;
+    const q = question.trim();
+    if (!q) return;
 
     setLoading(true);
     setError(null);
     setResult(null);
+    setOfflineCachedUtc(null);
 
     try {
       const resp = await fetch(apiUrl("/api/ask"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: question.trim() }),
+        body: JSON.stringify({ question: q }),
       });
 
       if (!resp.ok) {
@@ -39,11 +50,29 @@ export function Ask() {
       const data = (await resp.json()) as NarrationResult;
       setResult(data);
     } catch {
-      setError("Could not reach the server. Are you offline?");
+      // Server unreachable (offline). Answer locally from the last cached
+      // snapshot using the grounded deterministic engine.
+      const cached = await loadSnapshot();
+      if (cached) {
+        const grounded = narrateGrounded(q, cached.snapshot);
+        setResult({ ...grounded, engine: "grounded", usedCloudModel: false });
+        setOfflineCachedUtc(cached.snapshot.snapshotUtc);
+      } else {
+        setError(
+          "You appear to be offline and no space-weather data has been cached yet. " +
+            "Open SolarShield once while online, then Ask will work offline too.",
+        );
+      }
     } finally {
       setLoading(false);
     }
   }
+
+  const modeLabel = offlineCachedUtc
+    ? `Grounded engine · offline (cached ${formatUtcShort(offlineCachedUtc)} UTC)`
+    : result?.usedCloudModel
+      ? "IBM Granite (cloud)"
+      : "Grounded engine";
 
   return (
     <div className={styles.panel}>
@@ -82,13 +111,7 @@ export function Ask() {
             </div>
           ) : (
             <>
-              <div className={styles.modeTag}>
-                {result.usedCloudModel
-                  ? "IBM Granite (cloud)"
-                  : result.usedOnDeviceModel
-                    ? "IBM Granite Nano (on-device)"
-                    : "Deterministic template"}
-              </div>
+              <div className={styles.modeTag}>{modeLabel}</div>
               <p className={styles.answer}>{result.answer}</p>
             </>
           )}
@@ -113,4 +136,14 @@ export function Ask() {
       )}
     </div>
   );
+}
+
+/** Format an ISO timestamp as "HH:MM" in UTC for the offline mode tag. */
+function formatUtcShort(isoStr: string): string {
+  const d = new Date(isoStr);
+  if (isNaN(d.getTime())) return isoStr;
+  return `${d.getUTCHours().toString().padStart(2, "0")}:${d
+    .getUTCMinutes()
+    .toString()
+    .padStart(2, "0")}`;
 }
