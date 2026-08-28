@@ -1,0 +1,66 @@
+{
+  "_comment": "May 2024 Gannon G5 Geomagnetic Storm — Historical Replay Data",
+  "_source": "NOAA SWPC event records + NASA DONKI catalog",
+  "_label": "Historical Replay — not live data",
+  "eventName": "May 2024 Gannon Storm",
+  "description": "The most severe geomagnetic storm since the Halloween 2003 storms. A series of CMEs associated with active region 13664 produced G5 (Extreme) conditions on May 10–11, 2024.",
+  "replaySnapshot": {
+    "snapshotUtc": "2024-05-10T18:00:00.000Z",
+    "degraded": false,
+    "degradedSources": [],
+    "latestKp": {
+      "source": "NOAA-SWPC",
+      "fetchedAtUtc": "2024-05-10T18:00:00.000Z",
+      "timeTagUtc": "2024-05-10T18:00:00.000Z",
+      "kp": 9.0,
+      "aRunning": 400,
+      "stationCount": 13
+    },
+    "latestSolarWind": {
+      "source": "NOAA-SWPC",
+      "fetchedAtUtc": "2024-05-10T18:00:00.000Z",
+      "timeTagUtc": "2024-05-10T18:00:00.000Z",
+      "active": true,
+      "sensorSource": "DSCOVR",
+      "protonSpeedKmS": 800,
+      "protonDensityCm3": 28.5,
+      "protonTemperatureK": 250000,
+      "overallQuality": 0
+    },
+    "activeAlerts": [
+      {
+        "source": "NOAA-SWPC",
+        "fetchedAtUtc": "2024-05-10T18:00:00.000Z",
+        "productId": "G5F",
+        "issueDatetimeUtc": "2024-05-10 18:00:00.000",
+        "message": "WATCH: Geomagnetic Storm Category G5 (Extreme) in progress. Kp reached 9. This is the highest level on the NOAA geomagnetic storm scale. Widespread power system voltage control problems and protective system problems can occur; some grid systems may experience complete collapse or blackouts. HF radio propagation complete blackout on sunlit side. GPS severely degraded."
+      }
+    ],
+    "recentCmes": [
+      {
+        "source": "NASA-DONKI",
+        "fetchedAtUtc": "2024-05-10T16:00:00.000Z",
+        "activityId": "2024-05-08T06:09:00-CME-001",
+        "startTimeUtc": "2024-05-08T06:09:00.000Z",
+        "sourceLocation": "S17E79",
+        "activeRegionNum": 13664,
+        "primaryAnalysis": {
+          "time21_5Utc": "2024-05-08T10:45:00.000Z",
+          "speedKmS": 1437,
+          "halfAngleDeg": 40,
+          "isMostAccurate": true
+        },
+        "linkedEventIds": ["2024-05-08T05:51:00-FLR-001"],
+        "detailUrl": "https://kauai.ccmc.gsfc.nasa.gov/DONKI/view/CME/31134/-1"
+      }
+    ]
+  },
+  "timeline": [
+    { "timeUtc": "2024-05-08T06:09:00.000Z", "event": "X2.2 flare and CME departure from AR 13664", "kp": 2 },
+    { "timeUtc": "2024-05-10T06:00:00.000Z", "event": "CME impact — Kp begins climbing", "kp": 5 },
+    { "timeUtc": "2024-05-10T12:00:00.000Z", "event": "G4 conditions — severe geomagnetic storm", "kp": 8 },
+    { "timeUtc": "2024-05-10T18:00:00.000Z", "event": "G5 peak — most severe since 2003", "kp": 9 },
+    { "timeUtc": "2024-05-11T06:00:00.000Z", "event": "Storm gradually subsiding", "kp": 7 },
+    { "timeUtc": "2024-05-12T00:00:00.000Z", "event": "Below-storm threshold restored", "kp": 3 }
+  ]
+}
