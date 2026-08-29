@@ -70,9 +70,11 @@ export function Ask() {
 
   const modeLabel = offlineCachedUtc
     ? `Grounded engine · offline (cached ${formatUtcShort(offlineCachedUtc)} UTC)`
-    : result?.usedCloudModel
+    : result?.engine === "granite-cloud"
       ? "IBM Granite (cloud)"
-      : "Grounded engine";
+      : result?.engine === "granite-local"
+        ? "IBM Granite (local)"
+        : "Grounded engine";
 
   return (
     <div className={styles.panel}>
