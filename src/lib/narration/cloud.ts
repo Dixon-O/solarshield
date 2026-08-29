@@ -37,7 +37,7 @@ export interface CloudNarrationResult {
  * Build the narration prompt.
  * The model is an explainer, not a calculator.
  */
-function buildPrompt(input: CloudNarrationInput): string {
+export function buildPrompt(input: CloudNarrationInput): string {
   const valuesJson = JSON.stringify(input.structuredValues, null, 2);
 
   return `You are SolarShield's space-weather explainer. Your job is to turn the structured data values below into clear, plain-language guidance for the user. These values were produced by SolarShield's deterministic engine from real NOAA and NASA data.
