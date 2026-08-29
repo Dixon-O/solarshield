@@ -53,7 +53,7 @@ npm run build       # production web build
 
 This ladder is the heart of the app. Each rung is a real, tested fallback, so guidance keeps flowing as conditions deteriorate:
 
-**Online:** typed MCP tools fetch grounded values → **IBM Granite** phrases them in plain language → **Granite Guardian** verifies the phrasing is grounded → UI. If Guardian fails or the cloud is unavailable → the **grounded deterministic engine** takes over.
+**Online:** typed MCP tools fetch grounded values → **IBM Granite** (watsonx cloud, or locally via Ollama) phrases them in plain language → **Granite Guardian** verifies the phrasing is grounded → UI. If Guardian fails or the cloud is unavailable → the **grounded deterministic engine** takes over.
 
 **Offline:** the **grounded deterministic engine**, computed in the browser from the last-known snapshot and NOAA corpus cached in IndexedDB — real NOAA/NASA values, every number sourced, no server and no model.
 
@@ -67,6 +67,7 @@ The bottom rung — the grounded deterministic engine over cached NOAA data — 
 |---|---|---|---|
 | IBM Granite (watsonx.ai) | `ibm/granite-3-3-8b-instruct` | Cloud narration — turns the deterministic values into plain language under strict "do not compute any new value" rules | Real watsonx call; needs server-side keys — falls back to the grounded engine without them |
 | IBM Granite Guardian (watsonx.ai) | `ibm/granite-guardian-3-8b` | Grounding gate — verdicts each narration safe/grounded before it reaches the UI; fail-safe (any error blocks the output) | Real watsonx call; needs server-side keys |
+| IBM Granite (local, optional) | `granite3.3:8b` + `ibm/granite3.3-guardian:8b` via Ollama | The same narration + grounding gate, run on-device, card-free (Apache-2.0) — lights up the "IBM Granite (local)" mode tag | Real; env-gated (`NARRATION_PROVIDER=ollama`) — see `OLLAMA-LOCAL.md` |
 | Typed MCP tools | 6 in-process tools (`src/lib/mcp/tools.ts`) | Hand the model grounded values instead of letting it do math: `get_current_conditions`, `get_forecast`, `estimate_arrival`, `classify_severity`, `lookup_impact`, `cite_advisory` | Real |
 | Deterministic core + NOAA corpus | TypeScript; hand-curated NOAA corpus | The guaranteed answer path: physics-based arrival window, NOAA G-scale classification, verbatim impact text with citations | Real; covered by the 98-test suite |
 
