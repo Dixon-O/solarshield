@@ -4,7 +4,7 @@
  * no unsourced numbers in template output.
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // Mock cloud and guardian to isolate orchestrator logic
 vi.mock("./cloud", () => ({
@@ -76,6 +76,15 @@ const EMPTY_SNAPSHOT: SpaceWeatherSnapshot = {
 
 beforeEach(() => {
   vi.restoreAllMocks();
+  // Force the cloud (watsonx) provider so the online path exercises
+  // callCloudNarration + gateWithGuardian (both mocked above). Without this, an
+  // unconfigured env selects no provider and skips straight to the grounded
+  // engine — which would defeat these online-path assertions.
+  vi.stubEnv("NARRATION_PROVIDER", "watsonx");
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
 });
 
 describe("narrate — abstention", () => {
