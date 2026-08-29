@@ -107,7 +107,7 @@ export async function gateWithGuardian(
 // Helpers
 // ---------------------------------------------------------------------------
 
-function buildGuardianPrompt(narration: string, sourceValues: Record<string, unknown>): string {
+export function buildGuardianPrompt(narration: string, sourceValues: Record<string, unknown>): string {
   const valuesJson = JSON.stringify(sourceValues, null, 2);
 
   return `<|system|>
